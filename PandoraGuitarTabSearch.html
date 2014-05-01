@@ -1,0 +1,92 @@
+<html>
+<head>
+  <title>Pandora Guitar Tab Search</title>
+  <script src="http://www.pandora.com/include/PandoraAPIv2.js"></script>
+  <script type="text/javascript">
+    // Pandora Event Handlers
+    function initializePandora() {
+      Pandora.setEventHandler("SongPlayed", function(songData) {
+        songStatus(songData)
+
+      });
+
+      Pandora.setEventHandler("StationPlayed", function(stationData) {
+        var status = { stationName: stationData.stationName }
+        stationStatus(status)
+      });
+
+      Pandora.setEventHandler("PandoraStarted", function(stationData) {
+        var status = { stationName: 'Loading...' }
+        stationStatus(status)
+      });
+    }
+
+    // When a Station is changed, update the Station Name
+    function stationStatus(data) {
+      var stationName = data.stationName;
+
+    }
+
+    // When a Song is changed, print the song details as well as a links to search
+    function songStatus(data) {
+      var name   = data.songName; 
+      var artist = data.artistName;
+
+      // Create Search Links
+      var ugSearch = "<a href=\"http://www.ultimate-guitar.com/search.php?view_state=advanced&band_name=" + searchableString(artist) + "&song_name=" + searchableString(name) + "&version_la=\" target=\"_blank\" >Ultimate Guitar Tab Search</a>";
+      var youtubeSearch = "<a href=\"http://www.youtube.com/results?search_query=" + searchableString(artist) + "+" +  searchableString(name) + "\" target=\"_blank\" >Youtube Search</a>";
+      var groovesharkSearch = "<a href=\"http://grooveshark.com/#!/search?q=" + searchableString(artist) + "+" +  searchableString(name) + "\" target=\"_blank\" >Grooveshark Search</a>";
+  
+      // Populate  Table w/ Song Info & Links
+      addRow(artist, name, ugSearch, youtubeSearch, groovesharkSearch);
+
+    }
+
+    function searchableString(str) {
+      str = str.replace(/ /g, '+');
+      str = str.replace(/\(.*?\)/g, '');
+      return str;
+    }
+
+    function addRow(artist, name, ugSearch, youtubeSearch, groovesharkSearch) {
+ 
+      var table = document.getElementById('dataTable');
+      var rowCount = table.rows.length;
+      var row = table.insertRow(rowCount);
+ 
+      var cell1 = row.insertCell(0);
+      cell1.innerHTML = "<input type=\"button\" value=\"Delete\" onclick=\"document.getElementById('dataTable').deleteRow(this.parentNode.parentNode.rowIndex)\">";
+
+      var cell2 = row.insertCell(1);
+      cell2.innerHTML = artist;
+
+      var cell3 = row.insertCell(2);
+      cell3.innerHTML = name; 
+ 
+      var cell4 = row.insertCell(3);
+      cell4.innerHTML = ugSearch; 
+
+      var cell5 = row.insertCell(4);
+      cell5.innerHTML = youtubeSearch; 
+
+      var cell6 = row.insertCell(5);
+      cell6.innerHTML = groovesharkSearch;
+   }
+
+  </script>
+</head>
+<body onload="initializePandora()">
+    <p>
+    <table id="dataTable" border="1">
+        <tr>
+            <td>&nbsp;</td>
+            <td>Artist Name</td>
+            <td>Song Name</td>
+            <td colspan="3" align="center" >Searches</td>
+        </tr>
+    </table>
+
+</body>  
+</html>
+
+
